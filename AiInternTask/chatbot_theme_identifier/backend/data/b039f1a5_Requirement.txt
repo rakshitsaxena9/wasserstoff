@@ -1,0 +1,17 @@
+It's going to be a simple web app with text area and search button where user will input health specific problem with different allergies to get the best dietary recommendations. For this web application, need to develop a custom Model using Python and RAG techniques as mentioned in another document. Source article databases websites are shared in another notepad file named "Online Database links". 
+ 
+
+AI Model that will provide nutrition based recommendations on the basis of diagnosis and patient allergies. 
+
+For Example : A patient has high blood pressure with diabetic symptoms and patient is having allergies from dairy products. then Model should have trained itself from these sources against these symptoms to provide best dietary recommendations to these patients.  
+
+- Model will be fetch the data from these article websites on the basis of pre-decided problems like High Blood Pressure with different allergies. 
+- It can be queried on the basis of problems and allergies to provide best dietary recommendation plan.
+
+
+Technology Stack : 
+
+Frontend : React
+Backend : Python, Flask or FastAPI or Django
+AI Model : Python , RAG techniques
+Database : Any vector or graph database for model training

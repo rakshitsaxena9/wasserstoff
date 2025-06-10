@@ -1,0 +1,8 @@
+Please use these databases to train the AI for Koyl! It is very important!
+
+Here is the first one: https://pubmed.ncbi.nlm.nih.gov/
+
+Here is the second one: https://fdc.nal.usda.gov/
+Here is the third one: https://www.eatright.org/
+
+Here is the forth one: https://nutritionsource.hsph.harvard.edu/
