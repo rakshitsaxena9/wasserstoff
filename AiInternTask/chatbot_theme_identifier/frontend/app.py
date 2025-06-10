@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-BACKEND = "http://localhost:8000"
+BACKEND = "https://wasserstoff-dla4.onrender.com/"
 MAX_DOCS = 75
 
 st.set_page_config("GenAI Doc QA", layout="centered")
