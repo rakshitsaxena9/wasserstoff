@@ -1,11 +1,16 @@
 import streamlit as st
 import requests
+import uuid
 
-BACKEND = "https://wasserstoff-dla4.onrender.com/"
+BACKEND = "http://127.0.0.1:8000"
 MAX_DOCS = 75
 
 st.set_page_config("GenAI Doc QA", layout="centered")
 st.title("GenAI Document QA & Theme Chatbot")
+
+# ===== Session ID Initialization =====
+if "session_id" not in st.session_state:
+    st.session_state["session_id"] = str(uuid.uuid4())[:8]
 
 # ===== State Initialization =====
 if 'history' not in st.session_state:
@@ -38,8 +43,9 @@ if not st.session_state['uploaded_any']:
                 for f in uploaded_files:
                     if f.name not in st.session_state['uploaded_files']:
                         files = {"file": (f.name, f, f.type)}
+                        data = {"session_id": st.session_state["session_id"]}
                         with st.spinner(f"Uploading {f.name}..."):
-                            resp = requests.post(f"{BACKEND}/upload/", files=files)
+                            resp = requests.post(f"{BACKEND}/upload/", files=files, data=data)
                             res = resp.json()
                         if res.get("success"):
                             st.session_state['uploaded_files'].add(f.name)
@@ -104,7 +110,11 @@ def send_message():
     user_query = st.session_state['chat_input'].strip()
     if user_query:
         with st.spinner("Getting answer..."):
-            resp = requests.post(f"{BACKEND}/query/", data={"user_query": user_query})
+            data = {
+                "user_query": user_query,
+                "session_id": st.session_state["session_id"]
+            }
+            resp = requests.post(f"{BACKEND}/query/", data=data)
             result = resp.json()
         chat_item = {
             "question": user_query,
@@ -127,4 +137,3 @@ else:
 
 st.sidebar.markdown("---")
 st.sidebar.caption("Built with Gemini, ChromaDB, and Streamlit")
-

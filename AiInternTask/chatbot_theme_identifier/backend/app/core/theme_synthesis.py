@@ -4,13 +4,13 @@ def synthesize_themes(user_query, per_doc_answers):
     if not per_doc_answers:
         return "Not enough context in the uploaded documents to answer this question."
     formatted = "\n".join(
-        [f"Document {a['file_name']} ({a['citation']}): {a['answer']}" for a in per_doc_answers]
+        [f"Document {a['doc_name']} ({a['citation']}): {a['answer']}" for a in per_doc_answers]
     )
     prompt = f"""
 Given these answers from various documents for the question: "{user_query}":
 {formatted}
 
-Identify the main themes (1-5) present in these answers. For each theme, provide:
+Identify the main themes (1-4) present in these answers. For each theme, provide:
 - A short title (e.g., "Theme 1 - Regulatory Non-Compliance")
 - A concise, consolidated summary (2-4 sentences) addressing that theme, using evidence from the supporting documents.
 - Include supporting document names or IDs and their citations.

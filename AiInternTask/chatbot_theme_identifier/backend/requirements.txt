@@ -5,7 +5,8 @@ python-multipart
 PyPDF2
 pytesseract
 Pillow
-chromadb
-sentence-transformers
 requests
 python-dotenv
+python-docx
+pinecone
+fastembed
