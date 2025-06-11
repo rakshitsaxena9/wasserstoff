@@ -1,8 +1,13 @@
 from ..services.gemini_service import gemini_chat
 
 def synthesize_themes(user_query, per_doc_answers):
+    """
+    Synthesizes key themes from multiple per-document answers using an LLM.
+    Returns a concise summary with document citations.
+    """
     if not per_doc_answers:
         return "Not enough context in the uploaded documents to answer this question."
+
     formatted = "\n".join(
         [f"Document {a['doc_name']} ({a['citation']}): {a['answer']}" for a in per_doc_answers]
     )
@@ -34,4 +39,3 @@ If there is only one clear theme, output just one theme.
     except Exception as e:
         response = f"Theme synthesis failed: {e}"
     return response
-

@@ -1,30 +1,41 @@
 import streamlit as st
 import requests
 import uuid
+import os
+from dotenv import load_dotenv
 
-BACKEND = "http://127.0.0.1:8000"
+load_dotenv(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '.env'))) 
+
+# ====== Backend API endpoint and upload limits ======
+BACKEND = os.getenv("BACKEND_URL")
 MAX_DOCS = 75
 
+# ====== Streamlit UI Config ======
 st.set_page_config("GenAI Doc QA", layout="centered")
 st.title("GenAI Document QA & Theme Chatbot")
 
-# ===== Session ID Initialization =====
+# ====== Session and State Initialization ======
 if "session_id" not in st.session_state:
+    # Unique session identifier per user/session
     st.session_state["session_id"] = str(uuid.uuid4())[:8]
 
-# ===== State Initialization =====
 if 'history' not in st.session_state:
+    # Chat history for this session
     st.session_state['history'] = []
 if 'uploaded_files' not in st.session_state:
+    # Track names of already uploaded files
     st.session_state['uploaded_files'] = set()
 if 'uploaded_any' not in st.session_state:
+    # Tracks if any document has been uploaded & confirmed
     st.session_state['uploaded_any'] = False
 if 'upload_disabled' not in st.session_state:
+    # Disables upload after confirmation
     st.session_state['upload_disabled'] = False
 if 'chat_input' not in st.session_state:
+    # Stores user input in chat box
     st.session_state['chat_input'] = ""
 
-# ===== Document Upload Section =====
+# ====== Document Upload Section (Sidebar) ======
 st.sidebar.header("1. Upload Documents (one-time)")
 if not st.session_state['uploaded_any']:
     uploaded_files = st.sidebar.file_uploader(
@@ -42,6 +53,7 @@ if not st.session_state['uploaded_any']:
                 all_uploaded = True
                 for f in uploaded_files:
                     if f.name not in st.session_state['uploaded_files']:
+                        # Prepare file for upload to backend
                         files = {"file": (f.name, f, f.type)}
                         data = {"session_id": st.session_state["session_id"]}
                         with st.spinner(f"Uploading {f.name}..."):
@@ -66,16 +78,16 @@ if not st.session_state['uploaded_any']:
 
 st.sidebar.markdown("---")
 
-# ===== Conversational Chat History =====
+# ====== Conversation Display (Main Panel) ======
 st.markdown("### Conversation")
 for item in st.session_state['history']:
-    # User message
+    # Display user question
     st.markdown(
         f"<span style='color:#41c9ff'><b>You:</b> {item['question']}</span>",
         unsafe_allow_html=True
     )
 
-    # Grouped block for AI reply (table + answer)
+    # Display AI answers and themes (with custom formatting)
     with st.container():
         st.markdown(
             """
@@ -105,8 +117,9 @@ for item in st.session_state['history']:
 if not st.session_state['uploaded_any']:
     st.info("Upload and confirm documents to start chatting.")
 
-# ===== Chat Input Section =====
+# ====== Chat Input (Main Panel) ======
 def send_message():
+    """Handle user query, call backend, and update chat history."""
     user_query = st.session_state['chat_input'].strip()
     if user_query:
         with st.spinner("Getting answer..."):
@@ -122,7 +135,7 @@ def send_message():
             "themes": result.get("themes", "")
         }
         st.session_state['history'].append(chat_item)
-        st.session_state['chat_input'] = ""  # This works in the callback only
+        st.session_state['chat_input'] = ""  # Clear chat input after send
 
 if st.session_state['uploaded_any']:
     st.markdown("---")
